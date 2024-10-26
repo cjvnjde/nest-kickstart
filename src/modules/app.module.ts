@@ -8,6 +8,8 @@ import { AcceptLanguageResolver, HeaderResolver, I18nModule, I18nService, QueryR
 import { join } from "node:path";
 import { MailerModule } from "@nestjs-modules/mailer";
 import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
+import { AuthModule } from "./auth/auth.module";
+import type { ZitadelIntrospectionOptions } from "passport-zitadel";
 
 @Module({
   imports: [
@@ -39,6 +41,27 @@ import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handleba
     }),
     MikroOrmModule.forRoot(databaseConfig),
     PingModule,
+    AuthModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (config: ConfigService): ZitadelIntrospectionOptions => {
+        const environment = config.get<Configuration["environment"]>("environment");
+
+        return {
+          authority: environment.IDP_AUTHORITY,
+          authorization: {
+            type: environment.IDP_AUTHORIZATION_TYPE,
+            profile: {
+              type: environment.IDP_AUTHORIZATION_PROFILE_TYPE,
+              keyId: environment.IDP_AUTHORIZATION_PROFILE_KEY_ID,
+              key: environment.IDP_AUTHORIZATION_PROFILE_KEY,
+              appId: environment.IDP_AUTHORIZATION_PROFILE_APP_ID,
+              clientId: environment.IDP_AUTHORIZATION_PROFILE_CLIENT_ID,
+            },
+          },
+        };
+      },
+      inject: [ConfigService],
+    }),
   ],
   controllers: [],
   providers: [],

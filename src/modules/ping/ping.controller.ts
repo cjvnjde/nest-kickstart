@@ -1,5 +1,6 @@
-import { Controller, Get } from "@nestjs/common";
-import { ApiOperation, ApiProperty, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { Controller, Get, UseGuards } from "@nestjs/common";
+import { ApiBearerAuth, ApiOperation, ApiProperty, ApiResponse, ApiTags } from "@nestjs/swagger";
+import { AuthGuard } from "@nestjs/passport";
 
 class PingResponseDto {
   @ApiProperty({ example: "pong" })
@@ -19,6 +20,8 @@ export class PingController {
     description: "Returns a pong response.",
     type: PingResponseDto,
   })
+  @ApiBearerAuth("zitadel-jwt")
+  @UseGuards(AuthGuard("zitadel-jwt"))
   @Get()
   ping() {
     return new PingResponseDto({
