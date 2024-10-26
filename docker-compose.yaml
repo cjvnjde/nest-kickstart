@@ -1,0 +1,41 @@
+services:
+  db:
+    container_name: kickstarter-db
+    image: postgres:17
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    env_file:
+      - .env
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./scripts/initdb:/docker-entrypoint-initdb.d
+    networks:
+      - api
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${AUTH_DB} -U $${POSTGRES_USER}" ]
+      interval: '10s'
+      timeout: '30s'
+      retries: 5
+      start_period: '20s'
+
+  zitadel:
+    restart: 'always'
+    networks:
+      - api
+    image: 'ghcr.io/zitadel/zitadel:latest'
+    command: 'start-from-init --masterkey "MasterkeyNeedsToHave32Characters" --tlsMode disabled'
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: 'service_healthy'
+    ports:
+      - '8080:8080'
+
+networks:
+  api:
+    driver: bridge
+
+volumes:
+  db_data:
+    driver: local
