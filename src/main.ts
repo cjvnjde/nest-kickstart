@@ -14,6 +14,7 @@ function enableSwagger(app: NestFastifyApplication, env: Configuration["environm
   const clientSecret = env.OPENAPI_CLIENT_SECRET;
   const scopes: string[] = ["openid", "profile", "email", "offline_access"];
   const isDevelopment = true;
+  const swaggerPrefix = "swagger";
 
   const swaggerDocument = new DocumentBuilder()
     .setTitle("Kickstart")
@@ -29,14 +30,14 @@ function enableSwagger(app: NestFastifyApplication, env: Configuration["environm
 
   if (isDevelopment) {
     swaggerDocument.addServer(`http://localhost:${port}`);
-    redirectUri = `http://localhost:${port}/swagger`;
+    redirectUri = `http://localhost:${port}/${swaggerPrefix}`;
   } else {
     redirectUri = "YOUR PROD URL HERE";
     throw new Error("SET YOUR PROD URL HERE AND REMOVE THIS THROW");
   }
   const document = SwaggerModule.createDocument(app, swaggerDocument.build());
 
-  SwaggerModule.setup("swagger", app, document, {
+  SwaggerModule.setup(swaggerPrefix, app, document, {
     swaggerOptions: {
       persistAuthorization: true,
       oauth2RedirectUrl: `${redirectUri}/oauth2-redirect.html`,

@@ -8,8 +8,10 @@ import { AcceptLanguageResolver, HeaderResolver, I18nModule, I18nService, QueryR
 import { join } from "node:path";
 import { MailerModule } from "@nestjs-modules/mailer";
 import { HandlebarsAdapter } from "@nestjs-modules/mailer/dist/adapters/handlebars.adapter";
-import { AuthModule } from "./auth/auth.module";
 import type { ZitadelIntrospectionOptions } from "passport-zitadel";
+import { UserModule } from "./user/user.module";
+import { AccessControlModule } from "./access-control/access-control.module";
+import { AuthModule } from "./auth/auth.module";
 
 @Module({
   imports: [
@@ -40,8 +42,7 @@ import type { ZitadelIntrospectionOptions } from "passport-zitadel";
       }),
     }),
     MikroOrmModule.forRoot(databaseConfig),
-    PingModule,
-    AuthModule.forRootAsync({
+    AccessControlModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (config: ConfigService): ZitadelIntrospectionOptions => {
         const environment = config.get<Configuration["environment"]>("environment");
@@ -62,6 +63,10 @@ import type { ZitadelIntrospectionOptions } from "passport-zitadel";
       },
       inject: [ConfigService],
     }),
+
+    UserModule,
+    PingModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],

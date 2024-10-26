@@ -1,17 +1,12 @@
 import { Module } from "@nestjs/common";
-import { PassportModule } from "@nestjs/passport";
-import { ConfigurableModuleClass, MODULE_OPTIONS_TOKEN } from "./auth.module-definition";
-import { ZitadelStrategy } from "./strategy/zitadel.strategy";
+import { AuthService } from "./auth.service";
+import { AuthController } from "./auth.controller";
+import { UserModule } from "../user/user.module";
 
 @Module({
-  imports: [PassportModule],
-  providers: [
-    {
-      provide: MODULE_OPTIONS_TOKEN,
-      useValue: MODULE_OPTIONS_TOKEN,
-    },
-    ZitadelStrategy,
-  ],
-  exports: [ZitadelStrategy],
+  imports: [UserModule],
+  controllers: [AuthController],
+  providers: [AuthService],
+  exports: [AuthService],
 })
-export class AuthModule extends ConfigurableModuleClass {}
+export class AuthModule {}

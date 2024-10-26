@@ -52,6 +52,9 @@ class Environment {
 
   @IsString()
   OPENAPI_CLIENT_SECRET: string;
+
+  @IsString()
+  ACCESS_TOKEN: string;
 }
 
 export function getEnvironment(config: Record<string, unknown>) {
