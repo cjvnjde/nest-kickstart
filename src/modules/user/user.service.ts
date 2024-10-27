@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { UserEntity } from "../../database/entities";
 import { InjectRepository } from "@mikro-orm/nestjs";
 import { EntityManager, EntityRepository } from "@mikro-orm/core";
@@ -21,9 +21,15 @@ export class UserService {
   }
 
   async findByEmail(email: string) {
-    return this.userRepository.findOne({
+    const user = await this.userRepository.findOne({
       email,
     });
+
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    return user;
   }
 
   async create(userData: CreateUserDto) {

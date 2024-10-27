@@ -6,6 +6,7 @@ export type Configuration = {
   environment: ReturnType<typeof getEnvironment>;
   email: ReturnType<typeof getEmailConfig>;
   bull: ReturnType<typeof getBullConfig>;
+  isDevelopment: boolean;
 };
 
 export default (environment: Record<string, unknown>): Configuration => {
@@ -17,5 +18,6 @@ export default (environment: Record<string, unknown>): Configuration => {
     environment: env,
     email,
     bull,
+    isDevelopment: process.env.NODE_ENV !== "production",
   };
 };
