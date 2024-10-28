@@ -28,7 +28,7 @@ export class PasswordResetCodeService {
   async create(email: string) {
     const code = generateCode(6);
 
-    const user = await this.userService.findByEmail(email);
+    const user = await this.userService.findByEmailOrFail(email);
     const passwordResetCode = this.passwordResetCodeRepository.create({
       code,
       user,

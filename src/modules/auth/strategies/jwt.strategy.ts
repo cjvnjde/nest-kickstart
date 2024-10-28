@@ -6,10 +6,10 @@ import { Configuration } from "../../../config/configuration";
 import { UserEntity } from "../../../database/entities";
 import { UserService } from "../../user/user.service";
 import { AuthService } from "../auth.service";
-import { compareHash } from "../../../utils/compareHash";
 import { JwtCookieStrategy } from "./JwtCookieStrategy";
 import { UserDto } from "../../user/dtos/User.dto";
 import { Request, Response } from "express";
+import { compareHash } from "../../../utils/compareHash";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(JwtCookieStrategy) {
@@ -47,9 +47,16 @@ export class JwtStrategy extends PassportStrategy(JwtCookieStrategy) {
       throw new UnauthorizedException();
     }
 
-    const payload = this.jwtService.decode(refreshToken) as { userId?: string };
-    const user = await this.userService.findByEmail(payload?.userId);
-    const isValidRefreshToken = Boolean(user) && compareHash(refreshToken, user.refreshToken);
+    const payload = this.jwtService.decode<{ userId?: string }>(refreshToken);
+    const user = await this.userService.findByUuid(payload?.userId);
+
+    let isValidRefreshToken = false;
+
+    try {
+      isValidRefreshToken = Boolean(user) && compareHash(refreshToken, user.refreshToken);
+    } catch (error) {
+      throw new UnauthorizedException();
+    }
 
     if (!isValidRefreshToken) {
       throw new UnauthorizedException();
@@ -57,20 +64,7 @@ export class JwtStrategy extends PassportStrategy(JwtCookieStrategy) {
 
     const response: Response = request.res;
 
-    const accessToken = this.authService.getAccessToken(user.uuid);
-    const newRefreshToken = this.authService.getRefreshToken(user.uuid);
-
-    await this.authService.saveRefreshToken(newRefreshToken.token, user);
-
-    response.cookie(environment.REFRESH_TOKEN_COOKIE, refreshToken.token, {
-      httpOnly: true,
-      maxAge: refreshToken.expirationTime,
-    });
-
-    response.cookie(environment.ACCESS_TOKEN_COOKIE, accessToken.token, {
-      httpOnly: true,
-      maxAge: accessToken.expirationTime,
-    });
+    await this.authService.setResponseCookies(response, user);
 
     return user;
   }

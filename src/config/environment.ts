@@ -24,13 +24,13 @@ class Environment {
   JWT_ACCESS_TOKEN_SECRET: string;
 
   @IsInt()
-  JWT_ACCESS_TOKEN_EXPIRATION_TIME: number;
+  JWT_ACCESS_TOKEN_EXPIRATION_TIME_MS: number;
 
   @IsString()
   JWT_REFRESH_TOKEN_SECRET: string;
 
   @IsInt()
-  JWT_REFRESH_TOKEN_EXPIRATION_TIME: number;
+  JWT_REFRESH_TOKEN_EXPIRATION_TIME_MS: number;
 
   @IsString()
   ACCESS_TOKEN_COOKIE: string;
@@ -42,7 +42,7 @@ class Environment {
   COOKIE_SECRET: string;
 
   @IsInt()
-  EMAIL_CODE_EXPIRE_TIME: number;
+  EMAIL_CODE_EXPIRE_TIME_MS: number;
 
   @IsString()
   SMTP_HOST: string;

@@ -15,15 +15,29 @@ export class UserService {
   ) {}
 
   async findByUuid(uuid: string) {
-    return this.userRepository.findOne({
+    return await this.userRepository.findOne({
       uuid,
     });
   }
 
+  async findByUuidOrFail(uuid: string) {
+    const user = await this.findByUuid(uuid);
+
+    if (!user) {
+      throw new NotFoundException("User not found");
+    }
+
+    return user;
+  }
+
   async findByEmail(email: string) {
-    const user = await this.userRepository.findOne({
+    return await this.userRepository.findOne({
       email,
     });
+  }
+
+  async findByEmailOrFail(email: string) {
+    const user = await this.findByEmail(email);
 
     if (!user) {
       throw new NotFoundException("User not found");
@@ -40,15 +54,14 @@ export class UserService {
   }
 
   async updatePassword(user: UserDto, newPassword: string) {
-    const userEntity = await this.findByUuid(user.uuid);
-    userEntity.password = createHash(newPassword);
-
-    await this.em.persistAndFlush(userEntity);
+    await this.userRepository.nativeUpdate({ uuid: user.uuid }, { password: createHash(newPassword) });
   }
 
   async confirmEmail(user: UserDto) {
-    const userEntity = await this.findByUuid(user.uuid);
-    userEntity.emailVerifiedAt = new Date();
-    await this.em.persistAndFlush(userEntity);
+    await this.userRepository.nativeUpdate({ uuid: user.uuid }, { emailVerifiedAt: new Date() });
+  }
+
+  async updateRefreshToken(user: UserDto, newRefreshToken: string) {
+    await this.userRepository.nativeUpdate({ uuid: user.uuid }, { refreshToken: createHash(newRefreshToken) });
   }
 }

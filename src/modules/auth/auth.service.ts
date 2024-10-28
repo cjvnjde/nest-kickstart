@@ -6,9 +6,6 @@ import { Configuration } from "../../config/configuration";
 import { JwtService } from "@nestjs/jwt";
 import { Response } from "express";
 import { UserDto } from "../user/dtos/User.dto";
-import { InjectRepository } from "@mikro-orm/nestjs";
-import { EntityManager, EntityRepository, wrap } from "@mikro-orm/core";
-import { UserEntity } from "../../database/entities";
 import { PasswordResetCodeService } from "../password-reset-code/password-reset-code.service";
 import { addMilliseconds, isPast } from "date-fns";
 import { EmailConfirmationCodeService } from "../email-confirmation-code/email-confirmation-code.service";
@@ -26,9 +23,6 @@ export class AuthService {
     private readonly passwordResetCodeService: PasswordResetCodeService,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
-    @InjectRepository(UserEntity)
-    private readonly userRepository: EntityRepository<UserEntity>,
-    private readonly em: EntityManager,
   ) {}
 
   async register(data: UserRegistrationDto): Promise<void> {
@@ -48,12 +42,12 @@ export class AuthService {
       { userId },
       {
         secret: environment.JWT_ACCESS_TOKEN_SECRET,
-        expiresIn: `${environment.JWT_ACCESS_TOKEN_EXPIRATION_TIME}s`,
+        expiresIn: environment.JWT_ACCESS_TOKEN_EXPIRATION_TIME_MS,
       },
     );
 
     return {
-      expirationTime: environment.JWT_ACCESS_TOKEN_EXPIRATION_TIME,
+      expirationTime: environment.JWT_ACCESS_TOKEN_EXPIRATION_TIME_MS,
       token,
     };
   }
@@ -65,22 +59,14 @@ export class AuthService {
       { userId },
       {
         secret: environment.JWT_REFRESH_TOKEN_SECRET,
-        expiresIn: `${environment.JWT_REFRESH_TOKEN_EXPIRATION_TIME}s`,
+        expiresIn: environment.JWT_REFRESH_TOKEN_EXPIRATION_TIME_MS,
       },
     );
 
     return {
-      expirationTime: environment.JWT_REFRESH_TOKEN_EXPIRATION_TIME,
+      expirationTime: environment.JWT_REFRESH_TOKEN_EXPIRATION_TIME_MS,
       token,
     };
-  }
-
-  async saveRefreshToken(refreshToken: string, user: UserDto): Promise<void> {
-    const userItem = await this.userRepository.findOneOrFail(user.uuid);
-    wrap(userItem).assign({
-      refreshToken,
-    });
-    await this.em.flush();
   }
 
   public async setResponseCookies(response: Response, user: UserDto) {
@@ -88,16 +74,16 @@ export class AuthService {
 
     const accessToken = this.getAccessToken(user.uuid);
     const refreshToken = this.getRefreshToken(user.uuid);
-    await this.saveRefreshToken(refreshToken.token, user);
+    await this.userService.updateRefreshToken(user, refreshToken.token);
 
     response.cookie(environment.REFRESH_TOKEN_COOKIE, refreshToken.token, {
       httpOnly: true,
-      maxAge: refreshToken.expirationTime,
+      maxAge: refreshToken.expirationTime / 1000,
     });
 
     response.cookie(environment.ACCESS_TOKEN_COOKIE, accessToken.token, {
       httpOnly: true,
-      maxAge: accessToken.expirationTime,
+      maxAge: accessToken.expirationTime / 1000,
     });
   }
 
@@ -123,13 +109,17 @@ export class AuthService {
     const lastCode = await this.passwordResetCodeService.findOne(code);
 
     const isCodeValid = lastCode.code === code;
-    const isCodeExtant = isPast(addMilliseconds(lastCode.createdAt, environment.EMAIL_CODE_EXPIRE_TIME));
+    const isCodeExtant = this.checkCodeExpiation(lastCode, environment.EMAIL_CODE_EXPIRE_TIME_MS);
 
     if (isCodeValid && isCodeExtant) {
       return this.userService.updatePassword(new UserDto(lastCode.user as any), password);
     }
 
     throw new ForbiddenException("Invalid code");
+  }
+
+  private checkCodeExpiation<Code extends { createdAt: Date }>(code: Code, codeExpireInMs: number) {
+    return isPast(addMilliseconds(code.createdAt, codeExpireInMs));
   }
 
   async createEmailConfirmationCode(user: UserDto) {
@@ -142,7 +132,7 @@ export class AuthService {
     const lastCode = await this.emailConfirmationCodeService.findOne(code);
 
     const isCodeValid = lastCode.code === code && lastCode.email === user.email;
-    const isCodeExtant = isPast(addMilliseconds(lastCode.createdAt, environment.EMAIL_CODE_EXPIRE_TIME));
+    const isCodeExtant = this.checkCodeExpiation(lastCode, environment.EMAIL_CODE_EXPIRE_TIME_MS);
 
     if (isCodeValid && isCodeExtant) {
       await this.userService.confirmEmail(user);

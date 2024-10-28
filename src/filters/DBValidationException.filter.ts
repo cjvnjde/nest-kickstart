@@ -1,6 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from "@nestjs/common";
 import { Response } from "express";
 import { ValidationError } from "@mikro-orm/core";
+import { exceptionFormatter } from "../utils/exceptionFormatter";
 
 @Catch(ValidationError)
 export class DBValidationExceptionFilter implements ExceptionFilter {
@@ -10,10 +11,10 @@ export class DBValidationExceptionFilter implements ExceptionFilter {
 
     const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
 
-    const errorResponse = {
-      message: "Validation failed for one or more fields.",
-    };
-
-    response.status(status).json(errorResponse);
+    response.status(status).json(
+      exceptionFormatter({
+        message: "Validation failed for one or more fields.",
+      }),
+    );
   }
 }

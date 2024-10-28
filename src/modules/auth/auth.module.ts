@@ -29,7 +29,7 @@ import { EmailConfirmationCodeModule } from "../email-confirmation-code/email-co
         return {
           secret: environment.JWT_ACCESS_TOKEN_SECRET,
           signOptions: {
-            expiresIn: `${environment.JWT_ACCESS_TOKEN_EXPIRATION_TIME}s`,
+            expiresIn: environment.JWT_ACCESS_TOKEN_EXPIRATION_TIME_MS,
           },
         };
       },
