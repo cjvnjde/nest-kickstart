@@ -2,14 +2,15 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import { PassportStrategy } from "@nestjs/passport";
+import { Request, Response } from "express";
 import { Configuration } from "../../../config/configuration";
 import { UserEntity } from "../../../database/entities";
-import { UserService } from "../../user/user.service";
-import { AuthService } from "../auth.service";
+import { compareHash } from "../../../utils/compareHash";
 import { JwtCookieStrategy } from "../../../utils/JwtCookieStrategy";
 import { UserDto } from "../../user/dtos/User.dto";
-import { Request, Response } from "express";
-import { compareHash } from "../../../utils/compareHash";
+import { UserService } from "../../user/user.service";
+import { AuthService } from "../auth.service";
+import { JWTPayload } from "../types/JWTPayload";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(JwtCookieStrategy) {
@@ -28,8 +29,9 @@ export class JwtStrategy extends PassportStrategy(JwtCookieStrategy) {
     });
   }
 
-  async validate(request: Request, payload: { userId: string }) {
-    let user = await this.userService.findByUuid(payload?.userId);
+  async validate(request: Request, payload: JWTPayload) {
+    const session = await this.authService.findSessionWithUserByUuid(payload?.sessionUuid);
+    let user = session?.user;
 
     if (!user || !payload) {
       user = await this.getUserWithTokens(request);
@@ -47,13 +49,14 @@ export class JwtStrategy extends PassportStrategy(JwtCookieStrategy) {
       throw new UnauthorizedException();
     }
 
-    const payload = this.jwtService.decode<{ userId?: string }>(refreshToken);
-    const user = await this.userService.findByUuid(payload?.userId);
+    const payload = this.jwtService.decode<JWTPayload>(refreshToken);
+    const session = await this.authService.findSessionWithUserByUuid(payload?.sessionUuid);
+    const user = session?.user;
 
     let isValidRefreshToken = false;
 
     try {
-      isValidRefreshToken = Boolean(user) && compareHash(refreshToken, user.refreshToken);
+      isValidRefreshToken = Boolean(user) && payload.userUuid === user.uuid && compareHash(refreshToken, session.refreshToken);
     } catch (error) {
       throw new UnauthorizedException();
     }
@@ -64,7 +67,7 @@ export class JwtStrategy extends PassportStrategy(JwtCookieStrategy) {
 
     const response: Response = request.res;
 
-    await this.authService.setResponseCookies(response, user);
+    await this.authService.setResponseCookies(response, user.uuid, session.uuid);
 
     return user;
   }

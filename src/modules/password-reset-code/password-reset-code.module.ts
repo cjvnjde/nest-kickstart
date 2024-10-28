@@ -1,8 +1,8 @@
-import { Module } from "@nestjs/common";
-import { PasswordResetCodeService } from "./password-reset-code.service";
 import { MikroOrmModule } from "@mikro-orm/nestjs";
-import { PasswordResetCodeEntity } from "../../database/entities/PasswordResetCode.entity";
+import { Module } from "@nestjs/common";
+import { PasswordResetCodeEntity } from "../../database/entities";
 import { UserModule } from "../user/user.module";
+import { PasswordResetCodeService } from "./password-reset-code.service";
 
 @Module({
   imports: [UserModule, MikroOrmModule.forFeature({ entities: [PasswordResetCodeEntity] })],

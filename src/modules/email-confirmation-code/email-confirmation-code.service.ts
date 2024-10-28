@@ -1,7 +1,7 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@mikro-orm/nestjs";
 import { EntityManager, EntityRepository } from "@mikro-orm/core";
-import { EmailConfirmationCodeEntity } from "../../database/entities/EmailConfirmationCode.entity";
+import { InjectRepository } from "@mikro-orm/nestjs";
+import { Injectable } from "@nestjs/common";
+import { EmailConfirmationCodeEntity } from "../../database/entities";
 import { generateCode } from "../../utils/generateCode";
 import { UserDto } from "../user/dtos/User.dto";
 

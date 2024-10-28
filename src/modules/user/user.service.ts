@@ -1,9 +1,9 @@
+import { EntityManager, EntityRepository } from "@mikro-orm/core";
+import { InjectRepository } from "@mikro-orm/nestjs";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { UserEntity } from "../../database/entities";
-import { InjectRepository } from "@mikro-orm/nestjs";
-import { EntityManager, EntityRepository } from "@mikro-orm/core";
-import type { CreateUserDto } from "./dtos/CreateUser.dto";
 import { createHash } from "../../utils/createHash";
+import type { CreateUserDto } from "./dtos/CreateUser.dto";
 import { UserDto } from "./dtos/User.dto";
 
 @Injectable()
@@ -59,9 +59,5 @@ export class UserService {
 
   async confirmEmail(user: UserDto) {
     await this.userRepository.nativeUpdate({ uuid: user.uuid }, { emailVerifiedAt: new Date() });
-  }
-
-  async updateRefreshToken(user: UserDto, newRefreshToken: string) {
-    await this.userRepository.nativeUpdate({ uuid: user.uuid }, { refreshToken: createHash(newRefreshToken) });
   }
 }

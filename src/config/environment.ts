@@ -1,5 +1,6 @@
-import { IsInt, IsString, validateSync } from "class-validator";
 import { plainToInstance } from "class-transformer";
+import { IsInt, IsString, validateSync } from "class-validator";
+import { exceptionFactory } from "../utils/exceptionFactory";
 
 class Environment {
   @IsString()
@@ -73,7 +74,7 @@ export function getEnvironment(config: Record<string, unknown>) {
   });
 
   if (errors.length > 0) {
-    throw new Error(errors.toString());
+    throw exceptionFactory(errors);
   }
 
   return validatedConfig;

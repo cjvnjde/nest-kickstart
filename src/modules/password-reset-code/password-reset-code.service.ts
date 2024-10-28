@@ -1,7 +1,7 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@mikro-orm/nestjs";
 import { EntityManager, EntityRepository } from "@mikro-orm/core";
-import { PasswordResetCodeEntity } from "../../database/entities/PasswordResetCode.entity";
+import { InjectRepository } from "@mikro-orm/nestjs";
+import { Injectable } from "@nestjs/common";
+import { PasswordResetCodeEntity } from "../../database/entities";
 import { generateCode } from "../../utils/generateCode";
 import { UserService } from "../user/user.service";
 

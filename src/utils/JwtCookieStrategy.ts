@@ -1,12 +1,12 @@
 import { Request } from "express";
 import * as jwt from "jsonwebtoken";
-import passport, { type StrategyFailure } from "passport";
+import * as passport from "passport";
 
 export class JwtCookieStrategy extends passport.Strategy {
   name = "jwt-cookie";
 
   success: (user: Express.User, info?: object) => void;
-  fail: (challenge?: StrategyFailure | string | number, status?: number) => void;
+  fail: (challenge?: passport.StrategyFailure | string | number, status?: number) => void;
   redirect: (url: string, status?: number) => void;
   pass: () => void;
   error: (err: any) => void;

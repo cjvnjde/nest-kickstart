@@ -1,17 +1,17 @@
 import { Body, Controller, HttpCode, HttpStatus, Post, Res, UseGuards } from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { AuthService } from "./auth.service";
-import { UserRegistrationDto } from "./dtos/UserRegistration.dto";
-import { LocalAuthGuard } from "./guards/local-auth.guard";
-import { LoginDto } from "./dtos/Login.dto";
-import { UserDto } from "../user/dtos/User.dto";
 import { Response } from "express";
 import { User } from "../../decorators/user.decorator";
-import { JwtAuthGuard } from "./guards/jwt.guard";
 import { EmailService } from "../email/email.service";
+import { UserDto } from "../user/dtos/User.dto";
+import { AuthService } from "./auth.service";
 import { ForgotPasswordDto } from "./dtos/ForgotPassword.dto";
+import { LoginDto } from "./dtos/Login.dto";
 import { ResetPasswordDto } from "./dtos/ResetPassword.dto";
+import { UserRegistrationDto } from "./dtos/UserRegistration.dto";
 import { VerifyCodeDto } from "./dtos/VerifyCode.dto";
+import { JwtAuthGuard } from "./guards/jwt.guard";
+import { LocalAuthGuard } from "./guards/local-auth.guard";
 
 @Controller("auth")
 @ApiTags("auth")
@@ -79,7 +79,8 @@ export class AuthController {
     description: "Invalid credentials.",
   })
   async login(@User() user: UserDto, @Res({ passthrough: true }) response: Response) {
-    await this.authService.setResponseCookies(response, user);
+    const sessionUuid = await this.authService.createSession(user);
+    await this.authService.setResponseCookies(response, user.uuid, sessionUuid);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -90,8 +91,9 @@ export class AuthController {
     status: HttpStatus.NO_CONTENT,
     description: "Logout successful, cookies cleared.",
   })
-  logout(@Res({ passthrough: true }) response: Response) {
+  async logout(@User() user: UserDto, @Res({ passthrough: true }) response: Response) {
     this.authService.clearCookies(response);
+    await this.authService.deleteSessions(user.uuid);
   }
 
   @Post("forgot-password")

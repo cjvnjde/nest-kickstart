@@ -1,7 +1,8 @@
 import { Collection, Entity, ManyToMany, OneToMany, PrimaryKey, Property, Unique } from "@mikro-orm/core";
-import { RoleEntity } from "./Role.entity";
-import { PasswordResetCodeEntity } from "./PasswordResetCode.entity";
 import { EmailConfirmationCodeEntity } from "./EmailConfirmationCode.entity";
+import { PasswordResetCodeEntity } from "./PasswordResetCode.entity";
+import { RoleEntity } from "./Role.entity";
+import { SessionEntity } from "./Session.entity";
 
 @Entity({
   tableName: "users",
@@ -20,9 +21,6 @@ export class UserEntity {
   @Property()
   password: string;
 
-  @Property({ nullable: true, name: "refresh_token" })
-  refreshToken: string;
-
   @Property({ nullable: true })
   name?: string;
 
@@ -35,9 +33,12 @@ export class UserEntity {
   @ManyToMany({ entity: () => RoleEntity })
   roles = new Collection<RoleEntity>(this);
 
-  @OneToMany({ entity: () => PasswordResetCodeEntity, mappedBy: "user" }) // referenced entity type can be sniffer too
+  @OneToMany({ entity: () => PasswordResetCodeEntity, mappedBy: "user" })
   resetCodes = new Collection<PasswordResetCodeEntity>(this);
 
-  @OneToMany({ entity: () => EmailConfirmationCodeEntity, mappedBy: "user" }) // referenced entity type can be sniffer too
+  @OneToMany({ entity: () => EmailConfirmationCodeEntity, mappedBy: "user" })
   confirmationCodes = new Collection<EmailConfirmationCodeEntity>(this);
+
+  @OneToMany({ entity: () => SessionEntity, mappedBy: "user" })
+  sessions = new Collection<SessionEntity>(this);
 }
