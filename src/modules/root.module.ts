@@ -1,14 +1,15 @@
+import { MikroOrmModule } from "@mikro-orm/nestjs";
+import { BullModule } from "@nestjs/bullmq";
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import configuration, { type Configuration } from "../config/configuration";
 import databaseConfig from "../config/database";
-import { MikroOrmModule } from "@mikro-orm/nestjs";
 import { AuthModule } from "./auth/auth.module";
-import { EmailModule } from "./email/email.module";
-import { UserModule } from "./user/user.module";
-import { PasswordResetCodeModule } from "./password-reset-code/password-reset-code.module";
 import { EmailConfirmationCodeModule } from "./email-confirmation-code/email-confirmation-code.module";
-import { BullModule } from "@nestjs/bullmq";
+import { EmailModule } from "./email/email.module";
+import { PasswordResetCodeModule } from "./password-reset-code/password-reset-code.module";
+import { PoliciesModule } from "./policies/policies.module";
+import { UserModule } from "./user/user.module";
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { BullModule } from "@nestjs/bullmq";
     UserModule,
     PasswordResetCodeModule,
     EmailConfirmationCodeModule,
+    PoliciesModule,
   ],
 })
 export class RootModule {}

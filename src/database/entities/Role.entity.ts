@@ -11,7 +11,7 @@ export class RoleEntity {
 
   @Property()
   @Unique()
-  name!: string;
+  name: string;
 
   @ManyToMany({ entity: () => PermissionEntity })
   permissions = new Collection<PermissionEntity>(this);

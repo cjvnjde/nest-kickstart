@@ -16,8 +16,18 @@
           "default": "gen_random_uuid()",
           "mappedType": "uuid"
         },
-        "name": {
-          "name": "name",
+        "action": {
+          "name": "action",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "subject": {
+          "name": "subject",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
@@ -31,11 +41,12 @@
       "schema": "public",
       "indexes": [
         {
+          "keyName": "permissions_action_subject_unique",
           "columnNames": [
-            "name"
+            "action",
+            "subject"
           ],
-          "composite": false,
-          "keyName": "permissions_name_unique",
+          "composite": true,
           "constraint": true,
           "primary": false,
           "unique": true
