@@ -6,7 +6,7 @@ import { Configuration } from "../../../config/configuration";
 import { UserEntity } from "../../../database/entities";
 import { UserService } from "../../user/user.service";
 import { AuthService } from "../auth.service";
-import { JwtCookieStrategy } from "./JwtCookieStrategy";
+import { JwtCookieStrategy } from "../../../utils/JwtCookieStrategy";
 import { UserDto } from "../../user/dtos/User.dto";
 import { Request, Response } from "express";
 import { compareHash } from "../../../utils/compareHash";
