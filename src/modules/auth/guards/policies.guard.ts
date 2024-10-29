@@ -1,10 +1,10 @@
 import { defineAbility, PureAbility } from "@casl/ability";
+import { wrap } from "@mikro-orm/core";
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
+import { CHECK_POLICIES_KEY } from "../../../decorators/can.decorator";
 import { UserWithRolesDto } from "../../user/dtos/UserWithRolesDto";
 import { UserService } from "../../user/user.service";
-import { CHECK_POLICIES_KEY } from "../../../decorators/can.decorator";
-import { wrap } from "@mikro-orm/core";
 
 export type PolicyHandler = (ability: PureAbility) => boolean;
 

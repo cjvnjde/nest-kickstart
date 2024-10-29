@@ -1,8 +1,9 @@
-import { Injectable, Logger } from "@nestjs/common";
 import { ISendMailOptions, MailerService } from "@nestjs-modules/mailer";
-import { Queue } from "bullmq";
 import { InjectQueue } from "@nestjs/bullmq";
+import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
+import { Queue } from "bullmq";
+import { I18nContext } from "nestjs-i18n";
 
 @Injectable()
 export class EmailService {
@@ -20,12 +21,19 @@ export class EmailService {
 
   async addEmailToQueue(mailOptions: Partial<ISendMailOptions>) {
     const isDevelopment = this.configService.get<boolean>("isDevelopment");
+    const i18n = I18nContext.current();
+
+    const mailOptionsWithLang = {
+      ...mailOptions,
+      template: `${i18n.lang}/${mailOptions.template}`,
+    };
+
     if (isDevelopment) {
       this.logger.log(
-        `Email will be sent to ${mailOptions.to} with subject ${mailOptions.subject}. Template: ${mailOptions.template}. Context: ${JSON.stringify(mailOptions.context, null, 2)}`,
+        `Email will be sent to ${mailOptionsWithLang.to} with subject ${mailOptionsWithLang.subject}. Template: ${mailOptionsWithLang.template}. Context: ${JSON.stringify(mailOptionsWithLang.context, null, 2)}`,
       );
     } else {
-      await this.emailQueue.add("send-email", mailOptions);
+      await this.emailQueue.add("send-email", mailOptionsWithLang);
     }
   }
 
