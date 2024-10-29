@@ -80,7 +80,13 @@ export class AuthController {
   })
   async login(@User() user: UserDto, @Res({ passthrough: true }) response: Response) {
     const sessionUuid = await this.authService.createSession(user);
-    await this.authService.setResponseCookies(response, user.uuid, sessionUuid);
+    const accessToken = this.authService.getAccessToken(user.uuid, sessionUuid);
+    const refreshToken = this.authService.getRefreshToken(user.uuid, sessionUuid);
+
+    await this.authService.setAuthCookies(response, sessionUuid, {
+      accessToken,
+      refreshToken,
+    });
   }
 
   @UseGuards(JwtAuthGuard)

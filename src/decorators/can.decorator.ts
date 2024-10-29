@@ -1,5 +1,7 @@
 import { PureAbility } from "@casl/ability";
 import { SetMetadata } from "@nestjs/common";
-import { CHECK_POLICIES_KEY } from "../modules/auth/guards/policies.guard";
+import { PermissionAction } from "../constants/PermissionAction";
 
-export const Can = (action: string, subject: string) => SetMetadata(CHECK_POLICIES_KEY, [(ability: PureAbility) => ability.can(action, subject)]);
+export const CHECK_POLICIES_KEY = "check_policy";
+
+export const Can = (action: PermissionAction, subject: string) => SetMetadata(CHECK_POLICIES_KEY, [(ability: PureAbility) => ability.can(action, subject)]);

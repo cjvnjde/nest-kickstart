@@ -2,6 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsEmail, IsUUID, ValidateNested } from "class-validator";
 import { RoleDto } from "../../policies/dto/Role.dto";
+import { PartialDeep } from "../../../types/PartialDeep";
 
 export class UserWithRolesDto {
   @ApiProperty({ example: "uuid-value", description: "User's unique identifier" })
@@ -17,7 +18,7 @@ export class UserWithRolesDto {
   @Type(() => RoleDto)
   roles: RoleDto[];
 
-  constructor(partial: Partial<UserWithRolesDto>) {
+  constructor(partial: PartialDeep<UserWithRolesDto>) {
     this.uuid = partial.uuid;
     this.email = partial.email;
     this.roles = partial.roles?.map((role) => new RoleDto(role)) || [];

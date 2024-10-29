@@ -18,13 +18,20 @@
         },
         "action": {
           "name": "action",
-          "type": "varchar(255)",
+          "type": "permission_action",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 255,
-          "mappedType": "string"
+          "nativeEnumName": "permission_action",
+          "enumItems": [
+            "create",
+            "read",
+            "update",
+            "delete",
+            "manage"
+          ],
+          "mappedType": "enum"
         },
         "subject": {
           "name": "subject",
@@ -64,7 +71,19 @@
       ],
       "checks": [],
       "foreignKeys": {},
-      "nativeEnums": {}
+      "nativeEnums": {
+        "permission_action": {
+          "name": "permission_action",
+          "schema": "public",
+          "items": [
+            "create",
+            "read",
+            "update",
+            "delete",
+            "manage"
+          ]
+        }
+      }
     },
     {
       "columns": {
@@ -115,7 +134,19 @@
       ],
       "checks": [],
       "foreignKeys": {},
-      "nativeEnums": {}
+      "nativeEnums": {
+        "permission_action": {
+          "name": "permission_action",
+          "schema": "public",
+          "items": [
+            "create",
+            "read",
+            "update",
+            "delete",
+            "manage"
+          ]
+        }
+      }
     },
     {
       "columns": {
@@ -182,7 +213,19 @@
           "updateRule": "cascade"
         }
       },
-      "nativeEnums": {}
+      "nativeEnums": {
+        "permission_action": {
+          "name": "permission_action",
+          "schema": "public",
+          "items": [
+            "create",
+            "read",
+            "update",
+            "delete",
+            "manage"
+          ]
+        }
+      }
     },
     {
       "columns": {
@@ -285,7 +328,19 @@
       ],
       "checks": [],
       "foreignKeys": {},
-      "nativeEnums": {}
+      "nativeEnums": {
+        "permission_action": {
+          "name": "permission_action",
+          "schema": "public",
+          "items": [
+            "create",
+            "read",
+            "update",
+            "delete",
+            "manage"
+          ]
+        }
+      }
     },
     {
       "columns": {
@@ -348,7 +403,19 @@
           "updateRule": "cascade"
         }
       },
-      "nativeEnums": {}
+      "nativeEnums": {
+        "permission_action": {
+          "name": "permission_action",
+          "schema": "public",
+          "items": [
+            "create",
+            "read",
+            "update",
+            "delete",
+            "manage"
+          ]
+        }
+      }
     },
     {
       "columns": {
@@ -422,7 +489,19 @@
           "updateRule": "cascade"
         }
       },
-      "nativeEnums": {}
+      "nativeEnums": {
+        "permission_action": {
+          "name": "permission_action",
+          "schema": "public",
+          "items": [
+            "create",
+            "read",
+            "update",
+            "delete",
+            "manage"
+          ]
+        }
+      }
     },
     {
       "columns": {
@@ -506,7 +585,19 @@
           "updateRule": "cascade"
         }
       },
-      "nativeEnums": {}
+      "nativeEnums": {
+        "permission_action": {
+          "name": "permission_action",
+          "schema": "public",
+          "items": [
+            "create",
+            "read",
+            "update",
+            "delete",
+            "manage"
+          ]
+        }
+      }
     },
     {
       "columns": {
@@ -573,8 +664,32 @@
           "updateRule": "cascade"
         }
       },
-      "nativeEnums": {}
+      "nativeEnums": {
+        "permission_action": {
+          "name": "permission_action",
+          "schema": "public",
+          "items": [
+            "create",
+            "read",
+            "update",
+            "delete",
+            "manage"
+          ]
+        }
+      }
     }
   ],
-  "nativeEnums": {}
+  "nativeEnums": {
+    "permission_action": {
+      "name": "permission_action",
+      "schema": "public",
+      "items": [
+        "create",
+        "read",
+        "update",
+        "delete",
+        "manage"
+      ]
+    }
+  }
 }

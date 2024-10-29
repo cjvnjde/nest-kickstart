@@ -8,7 +8,6 @@ import { UserEntity } from "../../../database/entities";
 import { compareHash } from "../../../utils/compareHash";
 import { JwtCookieStrategy } from "../../../utils/JwtCookieStrategy";
 import { UserDto } from "../../user/dtos/User.dto";
-import { UserService } from "../../user/user.service";
 import { AuthService } from "../auth.service";
 import { JWTPayload } from "../types/JWTPayload";
 
@@ -16,7 +15,6 @@ import { JWTPayload } from "../types/JWTPayload";
 export class JwtStrategy extends PassportStrategy(JwtCookieStrategy) {
   constructor(
     private readonly configService: ConfigService,
-    private readonly userService: UserService,
     private readonly authService: AuthService,
     private readonly jwtService: JwtService,
   ) {
@@ -43,20 +41,20 @@ export class JwtStrategy extends PassportStrategy(JwtCookieStrategy) {
   async getUserWithTokens(request: Request): Promise<UserEntity> {
     const environment = this.configService.get<Configuration["environment"]>("environment");
 
-    const refreshToken = request.cookies?.[environment.REFRESH_TOKEN_COOKIE];
+    const currentRefreshToken = request.cookies?.[environment.REFRESH_TOKEN_COOKIE];
 
-    if (!refreshToken) {
+    if (!currentRefreshToken) {
       throw new UnauthorizedException();
     }
 
-    const payload = this.jwtService.decode<JWTPayload>(refreshToken);
+    const payload = this.jwtService.decode<JWTPayload>(currentRefreshToken);
     const session = await this.authService.findSessionWithUserByUuid(payload?.sessionUuid);
     const user = session?.user;
 
     let isValidRefreshToken = false;
 
     try {
-      isValidRefreshToken = Boolean(user) && payload.userUuid === user.uuid && compareHash(refreshToken, session.refreshToken);
+      isValidRefreshToken = Boolean(user) && payload.userUuid === user.uuid && compareHash(currentRefreshToken, session.refreshToken);
     } catch (error) {
       throw new UnauthorizedException();
     }
@@ -67,7 +65,12 @@ export class JwtStrategy extends PassportStrategy(JwtCookieStrategy) {
 
     const response: Response = request.res;
 
-    await this.authService.setResponseCookies(response, user.uuid, session.uuid);
+    const accessToken = this.authService.getAccessToken(user.uuid, session.uuid);
+    const refreshToken = this.authService.getRefreshToken(user.uuid, session.uuid);
+    await this.authService.setAuthCookies(response, session.uuid, {
+      accessToken,
+      refreshToken,
+    });
 
     return user;
   }

@@ -1,5 +1,6 @@
-import { Collection, Entity, ManyToMany, PrimaryKey, Property, Unique } from "@mikro-orm/core";
+import { Collection, Entity, Enum, ManyToMany, PrimaryKey, Property, Unique } from "@mikro-orm/core";
 import { RoleEntity } from "./Role.entity";
+import { PermissionAction } from "../../constants/PermissionAction";
 
 @Entity({
   tableName: "permissions",
@@ -9,8 +10,8 @@ export class PermissionEntity {
   @PrimaryKey({ type: "uuid", defaultRaw: "gen_random_uuid()" })
   uuid: string;
 
-  @Property()
-  action: string;
+  @Enum({ items: () => PermissionAction, nativeEnumName: "permission_action" })
+  action!: PermissionAction;
 
   @Property()
   subject: string;

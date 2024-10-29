@@ -87,11 +87,19 @@ export class AuthService {
     };
   }
 
-  public async setResponseCookies(response: Response, userUuid: string, sessionUuid: string) {
+  public async setAuthCookies(
+    response: Response,
+    sessionUuid: string,
+    {
+      accessToken,
+      refreshToken,
+    }: {
+      accessToken: Token;
+      refreshToken: Token;
+    },
+  ) {
     const environment = this.configService.get<Configuration["environment"]>("environment");
 
-    const accessToken = this.getAccessToken(userUuid, sessionUuid);
-    const refreshToken = this.getRefreshToken(userUuid, sessionUuid);
     await this.setSessionToken(sessionUuid, refreshToken.token);
 
     response.cookie(environment.REFRESH_TOKEN_COOKIE, refreshToken.token, {
