@@ -1,10 +1,11 @@
 import type { EntityManager } from "@mikro-orm/core";
 import { Seeder } from "@mikro-orm/seeder";
+import { PermissionAction } from "../../constants/PermissionAction";
 import { PermissionEntity, RoleEntity } from "../entities";
 
 export class PermissionsRolesSeeder extends Seeder {
   async run(em: EntityManager): Promise<void> {
-    const permissionsData = [{ action: "manage", subject: "all" }];
+    const permissionsData = [{ action: PermissionAction.MANAGE, subject: "all" }];
 
     const permissions = permissionsData.map((permData) => em.create(PermissionEntity, permData));
 

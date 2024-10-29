@@ -1,5 +1,6 @@
 import { Controller, Get, HttpCode, UseGuards } from "@nestjs/common";
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
+import { PermissionAction } from "../../constants/PermissionAction";
 import { Can } from "../../decorators/can.decorator";
 import { User } from "../../decorators/user.decorator";
 import { JwtAuthGuard } from "../auth/guards/jwt.guard";
@@ -21,7 +22,7 @@ export class UserController {
   @Get("admin")
   @HttpCode(200)
   @ApiOkResponse({ type: UserDto })
-  @Can("read", "user")
+  @Can(PermissionAction.READ, "user")
   async admin(@User() user: UserDto) {
     return user;
   }
