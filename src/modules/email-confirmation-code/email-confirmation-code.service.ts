@@ -4,6 +4,9 @@ import { Injectable } from "@nestjs/common";
 import { EmailConfirmationCodeEntity } from "../../database/entities";
 import { generateCode } from "../../utils/generateCode";
 import { UserDto } from "../user/dtos/User.dto";
+import { ConfigService } from "@nestjs/config";
+import { Configuration } from "../../config/configuration";
+import { addMilliseconds } from "date-fns";
 
 @Injectable()
 export class EmailConfirmationCodeService {
@@ -11,10 +14,11 @@ export class EmailConfirmationCodeService {
     @InjectRepository(EmailConfirmationCodeEntity)
     private readonly emailConfirmationCodeRepository: EntityRepository<EmailConfirmationCodeEntity>,
     private readonly em: EntityManager,
+    private readonly configService: ConfigService,
   ) {}
 
   findOne(code: string) {
-    return this.emailConfirmationCodeRepository.findOneOrFail(
+    return this.emailConfirmationCodeRepository.findOne(
       {
         code,
       },
@@ -26,10 +30,14 @@ export class EmailConfirmationCodeService {
 
   async create(user: UserDto) {
     const code = generateCode(6);
+    const environment = this.configService.get<Configuration["environment"]>("environment");
 
+    const createdAt = new Date();
     const emailConfirmationCode = this.emailConfirmationCodeRepository.create({
       email: user.email,
       code,
+      createdAt,
+      expiresAt: addMilliseconds(createdAt, environment.EMAIL_CODE_EXPIRE_TIME_MS),
       user: user.uuid,
     });
 

@@ -3,7 +3,7 @@ import { InjectRepository } from "@mikro-orm/nestjs";
 import { ForbiddenException, Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
-import { addMilliseconds, isPast } from "date-fns";
+import { isPast } from "date-fns";
 import { Response } from "express";
 import { Configuration } from "../../config/configuration";
 import { SessionEntity } from "../../database/entities";
@@ -134,22 +134,21 @@ export class AuthService {
   }
 
   async resetPassword(password: string, code: string) {
-    const environment = this.configService.get<Configuration["environment"]>("environment");
-
     const lastCode = await this.passwordResetCodeService.findOne(code);
 
-    const isCodeValid = lastCode.code === code;
-    const isCodeExtant = this.checkCodeExpiation(lastCode, environment.EMAIL_CODE_EXPIRE_TIME_MS);
-
-    if (isCodeValid && isCodeExtant) {
-      return this.userService.updatePassword(new UserDto(lastCode.user as any), password);
+    if (!lastCode) {
+      throw new ForbiddenException("Invalid code");
     }
 
-    throw new ForbiddenException("Invalid code");
-  }
+    if (isPast(lastCode.expiresAt)) {
+      throw new ForbiddenException("Code has expired");
+    }
 
-  private checkCodeExpiation<Code extends { createdAt: Date }>(code: Code, codeExpireInMs: number) {
-    return isPast(addMilliseconds(code.createdAt, codeExpireInMs));
+    if (lastCode.code !== code) {
+      throw new ForbiddenException("Invalid code");
+    }
+
+    return this.userService.updatePassword(new UserDto(lastCode.user as any), password);
   }
 
   async createEmailConfirmationCode(user: UserDto) {
@@ -157,15 +156,20 @@ export class AuthService {
   }
 
   async confirmEmail(user: UserDto, code: string) {
-    const environment = this.configService.get<Configuration["environment"]>("environment");
-
     const lastCode = await this.emailConfirmationCodeService.findOne(code);
 
-    const isCodeValid = lastCode.code === code && lastCode.email === user.email;
-    const isCodeExtant = this.checkCodeExpiation(lastCode, environment.EMAIL_CODE_EXPIRE_TIME_MS);
-
-    if (isCodeValid && isCodeExtant) {
-      await this.userService.confirmEmail(user);
+    if (!lastCode) {
+      throw new ForbiddenException("Invalid code");
     }
+
+    if (isPast(lastCode.expiresAt)) {
+      throw new ForbiddenException("Code has expired");
+    }
+
+    if (lastCode.code !== code || lastCode.email !== user.email) {
+      throw new ForbiddenException("Invalid code");
+    }
+
+    return this.userService.confirmEmail(user);
   }
 }

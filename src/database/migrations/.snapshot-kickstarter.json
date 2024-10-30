@@ -450,6 +450,16 @@
           "default": "current_timestamp",
           "mappedType": "datetime"
         },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
         "user_uuid": {
           "name": "user_uuid",
           "type": "uuid",
@@ -544,6 +554,16 @@
           "nullable": false,
           "length": 6,
           "default": "current_timestamp",
+          "mappedType": "datetime"
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
           "mappedType": "datetime"
         },
         "user_uuid": {

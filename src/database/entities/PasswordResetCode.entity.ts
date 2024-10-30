@@ -14,6 +14,9 @@ export class PasswordResetCodeEntity {
   @Property({ defaultRaw: "current_timestamp", name: "created_at" })
   createdAt!: Date;
 
+  @Property({ name: "expires_at" })
+  expiresAt: Date;
+
   @ManyToOne({ entity: () => UserEntity })
   user = new Collection<UserEntity>(this);
 }
