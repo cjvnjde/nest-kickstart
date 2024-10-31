@@ -1,20 +1,30 @@
-import { EntityManager, EntityRepository } from "@mikro-orm/core";
-import { InjectRepository } from "@mikro-orm/nestjs";
+import { EntityManager } from "@mikro-orm/core";
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { UserEntity } from "../../database/entities";
 import { createHash } from "../../utils/createHash";
 import { PoliciesService } from "../policies/policies.service";
 import type { CreateUserDto } from "./dtos/CreateUser.dto";
 import { UserDto } from "./dtos/User.dto";
+import { UserEntityRepository } from "./UserEntity.repository";
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(UserEntity)
-    private readonly userRepository: EntityRepository<UserEntity>,
+    private readonly userRepository: UserEntityRepository,
     private readonly em: EntityManager,
     private readonly policiesService: PoliciesService,
   ) {}
+
+  async findAll(userData: UserDto, limit: number, offset: number) {
+    return this.userRepository.getPaginatedResults(
+      {
+        uuid: { $ne: userData.uuid },
+      },
+      {
+        limit,
+        offset,
+      },
+    );
+  }
 
   async findByUuid(uuid: string) {
     return await this.userRepository.findOne({

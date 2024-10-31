@@ -1,11 +1,13 @@
-import { Collection, Entity, ManyToMany, OneToMany, PrimaryKey, Property, Unique } from "@mikro-orm/core";
+import { Collection, Entity, EntityRepositoryType, ManyToMany, OneToMany, PrimaryKey, Property, Unique } from "@mikro-orm/core";
 import { EmailConfirmationCodeEntity } from "./EmailConfirmationCode.entity";
 import { PasswordResetCodeEntity } from "./PasswordResetCode.entity";
 import { RoleEntity } from "./Role.entity";
 import { SessionEntity } from "./Session.entity";
+import { UserEntityRepository } from "../../modules/user/UserEntity.repository";
 
 @Entity({
   tableName: "users",
+  repository: () => UserEntityRepository,
 })
 export class UserEntity {
   @PrimaryKey({ type: "uuid", defaultRaw: "gen_random_uuid()" })
@@ -41,4 +43,6 @@ export class UserEntity {
 
   @OneToMany({ entity: () => SessionEntity, mappedBy: "user" })
   sessions = new Collection<SessionEntity>(this);
+
+  [EntityRepositoryType]?: UserEntityRepository;
 }
