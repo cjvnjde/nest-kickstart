@@ -136,16 +136,12 @@ export class AuthService {
   async resetPassword(password: string, code: string) {
     const lastCode = await this.passwordResetCodeService.findOne(code);
 
-    if (!lastCode) {
+    if (!lastCode || lastCode.code !== code) {
       throw new ForbiddenException("Invalid code");
     }
 
     if (isPast(lastCode.expiresAt)) {
       throw new ForbiddenException("Code has expired");
-    }
-
-    if (lastCode.code !== code) {
-      throw new ForbiddenException("Invalid code");
     }
 
     return this.userService.updatePassword(new UserDto(lastCode.user as any), password);
@@ -158,16 +154,12 @@ export class AuthService {
   async confirmEmail(user: UserDto, code: string) {
     const lastCode = await this.emailConfirmationCodeService.findOne(code);
 
-    if (!lastCode) {
+    if (!lastCode || lastCode.code !== code || lastCode.email !== user.email) {
       throw new ForbiddenException("Invalid code");
     }
 
     if (isPast(lastCode.expiresAt)) {
       throw new ForbiddenException("Code has expired");
-    }
-
-    if (lastCode.code !== code || lastCode.email !== user.email) {
-      throw new ForbiddenException("Invalid code");
     }
 
     return this.userService.confirmEmail(user);

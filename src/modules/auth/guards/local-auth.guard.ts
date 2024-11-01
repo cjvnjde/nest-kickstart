@@ -9,10 +9,6 @@ import { LoginDto } from "../dtos/Login.dto";
 
 @Injectable()
 export class LocalAuthGuard extends AuthGuard("local") {
-  constructor(private i18nService: I18nService) {
-    super();
-  }
-
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest<Request>();
 
