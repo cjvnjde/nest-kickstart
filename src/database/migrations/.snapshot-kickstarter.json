@@ -16,6 +16,120 @@
           "default": "gen_random_uuid()",
           "mappedType": "uuid"
         },
+        "original_name": {
+          "name": "original_name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "object_name": {
+          "name": "object_name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "bucket": {
+          "name": "bucket",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "mime_type": {
+          "name": "mime_type",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "size": {
+          "name": "size",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "default": "current_timestamp",
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "default": "current_timestamp",
+          "mappedType": "datetime"
+        }
+      },
+      "name": "files",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "files_pkey",
+          "columnNames": [
+            "uuid"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {
+        "permission_action": {
+          "name": "permission_action",
+          "schema": "public",
+          "items": [
+            "create",
+            "read",
+            "update",
+            "delete",
+            "manage"
+          ]
+        }
+      }
+    },
+    {
+      "columns": {
+        "uuid": {
+          "name": "uuid",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "gen_random_uuid()",
+          "mappedType": "uuid"
+        },
         "action": {
           "name": "action",
           "type": "permission_action",
