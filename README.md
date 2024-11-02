@@ -1,73 +1,122 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Nest Kickstart Project
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Welcome to **Nest Kickstart**, a project template to help you quickly get started with NestJS backend development. This repository is set up to include essential tools and commands for rapid development and production deployments.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Main Features
 
-## Description
+This project includes the following key features:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **Database Management**: Uses MikroORM for managing PostgreSQL database entities and migrations.
+- **File Storage**: Integrates Minio for S3-compatible object storage.
+- **Authentication**: Implements JWT-based authentication with access and refresh tokens stored in cookies for enhanced security.
 
-## Installation
+## Project Setup
 
-```bash
-$ pnpm install
+### Installation
+
+Make sure you have **pnpm** installed. Then run the following command to install the dependencies:
+
+```sh
+pnpm install
 ```
 
-## Running the app
+### Environment Variables
 
-```bash
-# development
-$ pnpm run start
+Create a `.env` file in the root of the project by copying from `.example.env`:
 
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
+```sh
+cp .example.env .env
 ```
 
-## Test
+For development, you only need to fill in the empty fields in the `.env` file. For production, make sure to update all secret-related values for enhanced security.
 
-```bash
-# unit tests
-$ pnpm run test
+Here is an overview of the environment variables:
 
-# e2e tests
-$ pnpm run test:e2e
+- **Database Configuration**:
 
-# test coverage
-$ pnpm run test:cov
-```
+  - `POSTGRES_HOST`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_PORT`, `DATABASE`, `DB_CONNECTION`, `DB_URL` - These variables configure the connection to the PostgreSQL database.
 
-## Support
+- **JWT Authentication**:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+  - `JWT_ACCESS_TOKEN_SECRET`, `JWT_REFRESH_TOKEN_SECRET` - Make sure to use strong, unique secrets for production.
+  - `JWT_ACCESS_TOKEN_EXPIRATION_TIME_MS`, `JWT_REFRESH_TOKEN_EXPIRATION_TIME_MS` - Configure token lifetimes as needed.
 
-## Stay in touch
+- **SMTP Configuration** (for sending emails):
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+  - `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` - Fill these to configure SMTP for email notifications.
+
+- **File Storage (Minio)**:
+  - `FILESTORE_ACCESS_KEY`, `FILESTORE_SECRET_KEY`, `FILESTORE_ENDPOINT`, `FILESTORE_PORT` - Required for configuring Minio.
+
+For development, placeholder values can be used, but for production, ensure all secrets (such as JWT secrets, SMTP credentials, and Minio access keys) are securely set.
+
+### Running the Application
+
+To start the application using Docker:
+
+1. Run Docker Compose to set up the required services:
+
+   ```sh
+   docker compose up -d
+   ```
+
+2. Apply database migrations:
+
+   ```sh
+   pnpm migration:up
+   ```
+
+3. Start the application in development mode:
+
+   ```sh
+   pnpm start:dev
+   ```
+
+For production:
+
+1. Build the application:
+
+   ```sh
+   pnpm build
+   ```
+
+2. Start the production build:
+
+   ```sh
+   pnpm start:prod
+   ```
+
+## Database Management
+
+MikroORM is used for managing database entities and migrations.
+
+- **Create Migration**: To create a new migration file, run:
+
+  ```sh
+  pnpm migration:create
+  ```
+
+- **Apply Migrations**: To apply pending migrations to the database, run:
+
+  ```sh
+  pnpm migration:up
+  ```
+
+- **Rollback Migration**: To rollback the latest migration, run:
+
+  ```sh
+  pnpm migration:down
+  ```
+
+## Authentication
+
+This project uses JWT for authentication:
+
+- **Access Tokens**: Used for authenticating API requests.
+- **Refresh Tokens**: Stored in HTTP-only cookies, used for refreshing expired access tokens securely.
+
+The authentication system uses **Passport** along with **JWT** strategies to handle login and token management.
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+This project is licensed under the **MIT** License.
