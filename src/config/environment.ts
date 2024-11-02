@@ -61,6 +61,18 @@ class Environment {
 
   @IsString()
   BULL_HOST: string;
+
+  @IsString()
+  FILESTORE_ACCESS_KEY: string;
+
+  @IsString()
+  FILESTORE_SECRET_KEY: string;
+
+  @IsString()
+  FILESTORE_ENDPOINT: string;
+
+  @IsInt()
+  FILESTORE_PORT: number;
 }
 
 export function getEnvironment(config: Record<string, unknown>) {

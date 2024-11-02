@@ -13,6 +13,8 @@ import { PasswordResetCodeModule } from "./password-reset-code/password-reset-co
 import { PingModule } from "./ping/ping.module";
 import { PoliciesModule } from "./policies/policies.module";
 import { UserModule } from "./user/user.module";
+import { FilestoreModule } from './filestore/filestore.module';
+import { TestingModule } from './testing/testing.module';
 
 @Module({
   imports: [
@@ -43,6 +45,8 @@ import { UserModule } from "./user/user.module";
     EmailConfirmationCodeModule,
     PoliciesModule,
     PingModule,
+    FilestoreModule,
+    TestingModule,
   ],
 })
 export class RootModule {}
