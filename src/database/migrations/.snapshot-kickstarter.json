@@ -264,8 +264,8 @@
     },
     {
       "columns": {
-        "role_entity_uuid": {
-          "name": "role_entity_uuid",
+        "role_uuid": {
+          "name": "role_uuid",
           "type": "uuid",
           "unsigned": false,
           "autoincrement": false,
@@ -273,8 +273,8 @@
           "nullable": false,
           "mappedType": "uuid"
         },
-        "permission_entity_uuid": {
-          "name": "permission_entity_uuid",
+        "permission_uuid": {
+          "name": "permission_uuid",
           "type": "uuid",
           "unsigned": false,
           "autoincrement": false,
@@ -289,8 +289,8 @@
         {
           "keyName": "roles_permissions_pkey",
           "columnNames": [
-            "role_entity_uuid",
-            "permission_entity_uuid"
+            "role_uuid",
+            "permission_uuid"
           ],
           "composite": true,
           "constraint": true,
@@ -300,10 +300,10 @@
       ],
       "checks": [],
       "foreignKeys": {
-        "roles_permissions_role_entity_uuid_foreign": {
-          "constraintName": "roles_permissions_role_entity_uuid_foreign",
+        "roles_permissions_role_uuid_foreign": {
+          "constraintName": "roles_permissions_role_uuid_foreign",
           "columnNames": [
-            "role_entity_uuid"
+            "role_uuid"
           ],
           "localTableName": "public.roles_permissions",
           "referencedColumnNames": [
@@ -313,10 +313,10 @@
           "deleteRule": "cascade",
           "updateRule": "cascade"
         },
-        "roles_permissions_permission_entity_uuid_foreign": {
-          "constraintName": "roles_permissions_permission_entity_uuid_foreign",
+        "roles_permissions_permission_uuid_foreign": {
+          "constraintName": "roles_permissions_permission_uuid_foreign",
           "columnNames": [
-            "permission_entity_uuid"
+            "permission_uuid"
           ],
           "localTableName": "public.roles_permissions",
           "referencedColumnNames": [
@@ -352,6 +352,17 @@
           "nullable": false,
           "default": "gen_random_uuid()",
           "mappedType": "uuid"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "default": "null",
+          "mappedType": "datetime"
         },
         "email": {
           "name": "email",
@@ -735,8 +746,8 @@
     },
     {
       "columns": {
-        "user_entity_uuid": {
-          "name": "user_entity_uuid",
+        "user_uuid": {
+          "name": "user_uuid",
           "type": "uuid",
           "unsigned": false,
           "autoincrement": false,
@@ -744,8 +755,8 @@
           "nullable": false,
           "mappedType": "uuid"
         },
-        "role_entity_uuid": {
-          "name": "role_entity_uuid",
+        "role_uuid": {
+          "name": "role_uuid",
           "type": "uuid",
           "unsigned": false,
           "autoincrement": false,
@@ -760,8 +771,8 @@
         {
           "keyName": "users_roles_pkey",
           "columnNames": [
-            "user_entity_uuid",
-            "role_entity_uuid"
+            "user_uuid",
+            "role_uuid"
           ],
           "composite": true,
           "constraint": true,
@@ -771,10 +782,10 @@
       ],
       "checks": [],
       "foreignKeys": {
-        "users_roles_user_entity_uuid_foreign": {
-          "constraintName": "users_roles_user_entity_uuid_foreign",
+        "users_roles_user_uuid_foreign": {
+          "constraintName": "users_roles_user_uuid_foreign",
           "columnNames": [
-            "user_entity_uuid"
+            "user_uuid"
           ],
           "localTableName": "public.users_roles",
           "referencedColumnNames": [
@@ -784,10 +795,10 @@
           "deleteRule": "cascade",
           "updateRule": "cascade"
         },
-        "users_roles_role_entity_uuid_foreign": {
-          "constraintName": "users_roles_role_entity_uuid_foreign",
+        "users_roles_role_uuid_foreign": {
+          "constraintName": "users_roles_role_uuid_foreign",
           "columnNames": [
-            "role_entity_uuid"
+            "role_uuid"
           ],
           "localTableName": "public.users_roles",
           "referencedColumnNames": [

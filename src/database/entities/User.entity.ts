@@ -4,12 +4,15 @@ import { PasswordResetCodeEntity } from "./PasswordResetCode.entity";
 import { RoleEntity } from "./Role.entity";
 import { SessionEntity } from "./Session.entity";
 import { UserEntityRepository } from "../../modules/user/UserEntity.repository";
+import { SoftRemovableEntity } from "../../utils/database/SoftRemovableEntity";
+import { ExcludeSoftRemovedFilter } from "../../utils/database/ExcludeSoftRemovedFilter";
 
+@ExcludeSoftRemovedFilter()
 @Entity({
   tableName: "users",
   repository: () => UserEntityRepository,
 })
-export class UserEntity {
+export class UserEntity extends SoftRemovableEntity {
   @PrimaryKey({ type: "uuid", defaultRaw: "gen_random_uuid()" })
   uuid: string;
 
@@ -32,7 +35,7 @@ export class UserEntity {
   @Property({ onUpdate: () => new Date(), defaultRaw: "current_timestamp", name: "updated_at" })
   updatedAt!: Date;
 
-  @ManyToMany({ entity: () => RoleEntity })
+  @ManyToMany({ entity: () => RoleEntity, owner: true, pivotTable: "users_roles", joinColumn: "user_uuid", inverseJoinColumn: "role_uuid" })
   roles = new Collection<RoleEntity>(this);
 
   @OneToMany({ entity: () => PasswordResetCodeEntity, mappedBy: "user" })

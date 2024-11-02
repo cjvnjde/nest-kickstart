@@ -3,7 +3,7 @@ import { Seeder } from "@mikro-orm/seeder";
 import { PermissionAction } from "../../constants/PermissionAction";
 import { PermissionEntity, RoleEntity } from "../entities";
 
-export class PermissionsRolesSeeder extends Seeder {
+export class DatabaseSeeder extends Seeder {
   async run(em: EntityManager): Promise<void> {
     const permissionsData = [{ action: PermissionAction.MANAGE, subject: "all" }];
 

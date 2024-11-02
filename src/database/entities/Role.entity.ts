@@ -13,7 +13,7 @@ export class RoleEntity {
   @Unique()
   name: string;
 
-  @ManyToMany({ entity: () => PermissionEntity })
+  @ManyToMany({ entity: () => PermissionEntity, owner: true, pivotTable: "roles_permissions", joinColumn: "role_uuid", inverseJoinColumn: "permission_uuid" })
   permissions = new Collection<PermissionEntity>(this);
 
   @ManyToMany({ mappedBy: "roles", entity: () => UserEntity })
