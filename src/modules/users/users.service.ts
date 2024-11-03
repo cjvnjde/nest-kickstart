@@ -1,17 +1,17 @@
 import { EntityManager } from "@mikro-orm/core";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { createHash } from "../../utils/createHash";
-import { PoliciesService } from "../policies/policies.service";
+import { RolesService } from "../roles/roles.service";
 import type { CreateUserDto } from "./dtos/CreateUser.dto";
 import { UserDto } from "./dtos/User.dto";
 import { UserEntityRepository } from "./UserEntity.repository";
 
 @Injectable()
-export class UserService {
+export class UsersService {
   constructor(
     private readonly userRepository: UserEntityRepository,
     private readonly em: EntityManager,
-    private readonly policiesService: PoliciesService,
+    private readonly policiesService: RolesService,
   ) {}
 
   async findAll(userData: UserDto, limit: number, offset: number) {
@@ -48,8 +48,8 @@ export class UserService {
     });
   }
 
-  async findWithRolesAndPermissionsByUuid(uuid: string) {
-    return await this.userRepository.findOne(
+  findWithRolesAndPermissionsByUuid(uuid: string) {
+    return this.userRepository.findOne(
       {
         uuid,
       },

@@ -5,15 +5,18 @@ import { PermissionDto } from "./Permission.dto";
 import { PartialDeep } from "../../../types/PartialDeep";
 
 export class RoleDto {
-  @ApiProperty({ example: "uuid-value", description: "User's unique identifier" })
+  @ApiProperty({ example: "uuid-value", description: "Role's unique identifier" })
   @IsUUID()
   uuid: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: "admin", description: "Name of the role" })
   @IsString()
   name: string;
 
-  @ApiProperty({ type: [PermissionDto] })
+  @ApiProperty({
+    type: [PermissionDto],
+    description: "List of permissions assigned to the role",
+  })
   @ValidateNested({ each: true })
   @Type(() => PermissionDto)
   permissions: PermissionDto[];

@@ -1,24 +1,25 @@
 import { EntityManager, EntityRepository } from "@mikro-orm/core";
 import { InjectRepository } from "@mikro-orm/nestjs";
 import { Injectable } from "@nestjs/common";
-import { EmailConfirmationCodeEntity } from "../../database/entities";
+import { PasswordResetCodeEntity } from "../../database/entities";
 import { generateCode } from "../../utils/generateCode";
-import { UserDto } from "../user/dtos/User.dto";
+import { UsersService } from "../users/users.service";
 import { ConfigService } from "@nestjs/config";
-import { Configuration } from "../../config/configuration";
 import { addMilliseconds } from "date-fns";
+import { Configuration } from "../../config/configuration";
 
 @Injectable()
-export class EmailConfirmationCodeService {
+export class PasswordResetCodesService {
   constructor(
-    @InjectRepository(EmailConfirmationCodeEntity)
-    private readonly emailConfirmationCodeRepository: EntityRepository<EmailConfirmationCodeEntity>,
+    @InjectRepository(PasswordResetCodeEntity)
+    private readonly passwordResetCodeRepository: EntityRepository<PasswordResetCodeEntity>,
     private readonly em: EntityManager,
+    private readonly userService: UsersService,
     private readonly configService: ConfigService,
   ) {}
 
   findOne(code: string) {
-    return this.emailConfirmationCodeRepository.findOne(
+    return this.passwordResetCodeRepository.findOne(
       {
         code,
       },
@@ -28,20 +29,20 @@ export class EmailConfirmationCodeService {
     );
   }
 
-  async create(user: UserDto) {
+  async create(email: string) {
     const code = generateCode(6);
     const environment = this.configService.get<Configuration["environment"]>("environment");
-
     const createdAt = new Date();
-    const emailConfirmationCode = this.emailConfirmationCodeRepository.create({
-      email: user.email,
+
+    const user = await this.userService.findByEmailOrFail(email);
+    const passwordResetCode = this.passwordResetCodeRepository.create({
       code,
       createdAt,
       expiresAt: addMilliseconds(createdAt, environment.EMAIL_CODE_EXPIRE_TIME_MS),
-      user: user.uuid,
+      user,
     });
 
-    await this.em.persistAndFlush(emailConfirmationCode);
+    await this.em.persistAndFlush(passwordResetCode);
 
     return code;
   }

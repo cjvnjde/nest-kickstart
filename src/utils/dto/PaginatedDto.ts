@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { PartialDeep } from "../types/PartialDeep";
+import { PartialDeep } from "../../types/PartialDeep";
 
 export class PaginatedDto<T> {
   @ApiProperty({ isArray: true })

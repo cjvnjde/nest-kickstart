@@ -3,7 +3,7 @@ import { EmailConfirmationCodeEntity } from "./EmailConfirmationCode.entity";
 import { PasswordResetCodeEntity } from "./PasswordResetCode.entity";
 import { RoleEntity } from "./Role.entity";
 import { SessionEntity } from "./Session.entity";
-import { UserEntityRepository } from "../../modules/user/UserEntity.repository";
+import { UserEntityRepository } from "../../modules/users/UserEntity.repository";
 import { SoftRemovableEntity } from "../../utils/database/SoftRemovableEntity";
 import { ExcludeSoftRemovedFilter } from "../../utils/database/ExcludeSoftRemovedFilter";
 

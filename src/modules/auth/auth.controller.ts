@@ -3,7 +3,7 @@ import { ApiBody, ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
 import { Response } from "express";
 import { User } from "../../decorators/user.decorator";
 import { EmailService } from "../email/email.service";
-import { UserDto } from "../user/dtos/User.dto";
+import { UserDto } from "../users/dtos/User.dto";
 import { AuthService } from "./auth.service";
 import { ForgotPasswordDto } from "./dtos/ForgotPassword.dto";
 import { LoginDto } from "./dtos/Login.dto";

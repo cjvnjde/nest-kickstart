@@ -1,5 +1,5 @@
 import { createParamDecorator, ExecutionContext, UnauthorizedException } from "@nestjs/common";
-import { UserDto } from "../modules/user/dtos/User.dto";
+import { UserDto } from "../modules/users/dtos/User.dto";
 
 export const User = createParamDecorator(<K extends keyof UserDto | undefined>(data: K, ctx: ExecutionContext) => {
   const request = ctx.switchToHttp().getRequest();

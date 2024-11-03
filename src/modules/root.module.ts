@@ -7,14 +7,12 @@ import { join } from "node:path";
 import configuration, { type Configuration } from "../config/configuration";
 import databaseConfig from "../config/database";
 import { AuthModule } from "./auth/auth.module";
-import { EmailConfirmationCodeModule } from "./email-confirmation-code/email-confirmation-code.module";
+import { EmailConfirmationCodesModule } from "./email-confirmation-codes/email-confirmation-codes.module";
 import { EmailModule } from "./email/email.module";
-import { PasswordResetCodeModule } from "./password-reset-code/password-reset-code.module";
+import { PasswordResetCodesModule } from "./password-reset-codes/password-reset-codes.module";
 import { PingModule } from "./ping/ping.module";
-import { PoliciesModule } from "./policies/policies.module";
-import { UserModule } from "./user/user.module";
-import { FilestoreModule } from './filestore/filestore.module';
-import { TestingModule } from './testing/testing.module';
+import { RolesModule } from "./roles/roles.module";
+import { UsersModule } from "./users/users.module";
 
 @Module({
   imports: [
@@ -40,13 +38,11 @@ import { TestingModule } from './testing/testing.module';
     MikroOrmModule.forRoot(databaseConfig),
     AuthModule,
     EmailModule,
-    UserModule,
-    PasswordResetCodeModule,
-    EmailConfirmationCodeModule,
-    PoliciesModule,
+    UsersModule,
+    PasswordResetCodesModule,
+    EmailConfirmationCodesModule,
+    RolesModule,
     PingModule,
-    FilestoreModule,
-    TestingModule,
   ],
 })
 export class RootModule {}

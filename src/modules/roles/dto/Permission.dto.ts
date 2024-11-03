@@ -7,11 +7,11 @@ export class PermissionDto {
   @IsUUID()
   uuid: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: "read", description: "The action the permission grants" })
   @IsString()
   action: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: "resource", description: "The subject to which the permission applies" })
   @IsString()
   subject: string;
 

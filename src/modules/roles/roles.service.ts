@@ -4,7 +4,7 @@ import { Injectable } from "@nestjs/common";
 import { RoleEntity } from "../../database/entities";
 
 @Injectable()
-export class PoliciesService {
+export class RolesService {
   constructor(
     @InjectRepository(RoleEntity)
     private readonly roleRepository: EntityRepository<RoleEntity>,
@@ -12,5 +12,9 @@ export class PoliciesService {
 
   findByRole(role: string) {
     return this.roleRepository.findOne({ name: role });
+  }
+
+  findAllRolesWithPermissions() {
+    return this.roleRepository.findAll({ populate: ["permissions"] });
   }
 }

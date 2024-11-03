@@ -4,10 +4,10 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
 import { Configuration } from "../../config/configuration";
 import { SessionEntity } from "../../database/entities";
-import { EmailConfirmationCodeModule } from "../email-confirmation-code/email-confirmation-code.module";
+import { EmailConfirmationCodesModule } from "../email-confirmation-codes/email-confirmation-codes.module";
 import { EmailModule } from "../email/email.module";
-import { PasswordResetCodeModule } from "../password-reset-code/password-reset-code.module";
-import { UserModule } from "../user/user.module";
+import { PasswordResetCodesModule } from "../password-reset-codes/password-reset-codes.module";
+import { UsersModule } from "../users/users.module";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
 import { JwtStrategy } from "./strategies/jwt.strategy";
@@ -15,10 +15,10 @@ import { LocalStrategy } from "./strategies/local.strategy";
 
 @Module({
   imports: [
-    UserModule,
+    UsersModule,
     EmailModule,
-    EmailConfirmationCodeModule,
-    PasswordResetCodeModule,
+    EmailConfirmationCodesModule,
+    PasswordResetCodesModule,
     MikroOrmModule.forFeature({ entities: [SessionEntity] }),
     JwtModule.registerAsync({
       imports: [ConfigModule],

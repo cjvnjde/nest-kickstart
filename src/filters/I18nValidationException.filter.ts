@@ -1,8 +1,8 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from "@nestjs/common";
 import { Response } from "express";
 import { I18nContext, I18nValidationException } from "nestjs-i18n";
-import { exceptionFormatter } from "../utils/exceptionFormatter";
-import { formatI18nErrors } from "../utils/formatI18nErrors";
+import { exceptionFormatter } from "../utils/formatters/exceptionFormatter";
+import { formatI18nErrors } from "../utils/formatters/formatI18nErrors";
 
 @Catch(I18nValidationException)
 export class I18nValidationExceptionFilter implements ExceptionFilter {

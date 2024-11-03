@@ -8,10 +8,10 @@ import { Response } from "express";
 import { Configuration } from "../../config/configuration";
 import { SessionEntity } from "../../database/entities";
 import { createHash } from "../../utils/createHash";
-import { EmailConfirmationCodeService } from "../email-confirmation-code/email-confirmation-code.service";
-import { PasswordResetCodeService } from "../password-reset-code/password-reset-code.service";
-import { UserDto } from "../user/dtos/User.dto";
-import { UserService } from "../user/user.service";
+import { EmailConfirmationCodesService } from "../email-confirmation-codes/email-confirmation-codes.service";
+import { PasswordResetCodesService } from "../password-reset-codes/password-reset-codes.service";
+import { UserDto } from "../users/dtos/User.dto";
+import { UsersService } from "../users/users.service";
 import { UserRegistrationDto } from "./dtos/UserRegistration.dto";
 import { JWTPayload } from "./types/JWTPayload";
 
@@ -23,9 +23,9 @@ type Token = {
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userService: UserService,
-    private readonly emailConfirmationCodeService: EmailConfirmationCodeService,
-    private readonly passwordResetCodeService: PasswordResetCodeService,
+    private readonly userService: UsersService,
+    private readonly emailConfirmationCodeService: EmailConfirmationCodesService,
+    private readonly passwordResetCodeService: PasswordResetCodesService,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
     @InjectRepository(SessionEntity)
@@ -152,7 +152,7 @@ export class AuthService {
   }
 
   async confirmEmail(user: UserDto, code: string) {
-    const lastCode = await this.emailConfirmationCodeService.findOne(code);
+    const lastCode = await this.emailConfirmationCodeService.findOneWithUser(code);
 
     if (!lastCode || lastCode.code !== code || lastCode.email !== user.email) {
       throw new ForbiddenException("Invalid code");

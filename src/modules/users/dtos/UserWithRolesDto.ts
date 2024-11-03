@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsEmail, IsUUID, ValidateNested } from "class-validator";
-import { RoleDto } from "../../policies/dto/Role.dto";
+import { RoleDto } from "../../roles/dto/Role.dto";
 import { PartialDeep } from "../../../types/PartialDeep";
 
 export class UserWithRolesDto {

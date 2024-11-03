@@ -3,8 +3,8 @@ import { wrap } from "@mikro-orm/core";
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { CHECK_POLICIES_KEY } from "../../../decorators/can.decorator";
-import { UserWithRolesDto } from "../../user/dtos/UserWithRolesDto";
-import { UserService } from "../../user/user.service";
+import { UserWithRolesDto } from "../../users/dtos/UserWithRolesDto";
+import { UsersService } from "../../users/users.service";
 
 export type PolicyHandler = (ability: PureAbility) => boolean;
 
@@ -12,7 +12,7 @@ export type PolicyHandler = (ability: PureAbility) => boolean;
 export class PoliciesGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
-    private readonly userService: UserService,
+    private readonly userService: UsersService,
   ) {}
 
   async canActivate(context: ExecutionContext) {
